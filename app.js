@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require( 'cors' );
 
+
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/express-db', {useNewUrlParser: true});
 
@@ -23,7 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use('/',cors(), indexRouter);
 app.use('/users',cors(), usersRouter);
 
 // catch 404 and forward to error handler
