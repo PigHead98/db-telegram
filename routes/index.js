@@ -8,6 +8,6 @@ const AuthMiddleWare = require("../middleware/AuthMiddleware");
 router.get('/', (req,res,next) => {
     res.render('index', { title: "name" });
 });
-router.get('/book',cors(),AuthMiddleWare.isAuth, bookController.index);
+router.get('/book',AuthMiddleWare.isAuth, bookController.index);
 
 module.exports = router;

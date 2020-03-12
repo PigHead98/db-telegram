@@ -1,5 +1,5 @@
 const jwtHelper = require("../helpers/jwt.helper");
-const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "access-token-secret-example-trungquandev.com-green-cat-a@";
+const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "access-token-secret-example";
 
 module.exports = {
     isAuth : async (req, res, next) => {
@@ -11,7 +11,7 @@ module.exports = {
                 next();
             } catch (error) {
                 return res.status(401).json({
-                    message: 'Unauthorized.',
+                    message: error,
                 });
             }
         } else {

@@ -6,12 +6,11 @@ let tokenList = {};
 
 const accessTokenLife = process.env.ACCESS_TOKEN_LIFE || "1h";
 
-const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "access-token-secret-example-trungquandev.com-green-cat-a@";
+const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "access-token-secret-example";
 
 const refreshTokenLife = process.env.REFRESH_TOKEN_LIFE || "3650d";
 
-const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET || "refresh-token-secret-example-trungquandev.com-green-cat-a@";
-
+const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET || "refresh-token-secret-example";
 
 let createToken = async ( data ) => {
     try {

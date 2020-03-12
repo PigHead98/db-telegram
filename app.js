@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -7,13 +9,16 @@ const cors = require( 'cors' );
 
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/express-db', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost/express-db', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 const app = express();
-const port = 8888;
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -43,5 +48,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 module.exports = app;
