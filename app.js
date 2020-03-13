@@ -9,14 +9,13 @@ const cors = require( 'cors' );
 
 
 const mongoose = require( 'mongoose' );
-mongoose.connect( 'mongodb://localhost/express-db', {
+mongoose.connect( 'mongodb://localhost/db-telegram', {
     useNewUrlParser : true,
     useUnifiedTopology : true
 } );
 
 const indexRouter = require( './routes/index' );
 const usersRouter = require( './routes/users' );
-const teleRouter = require( './routes/tele' );
 
 const app = express();
 
@@ -32,7 +31,6 @@ app.use( express.static( path.join( __dirname, 'public' ) ) );
 
 app.use( '/', cors(), indexRouter );
 app.use( '/users', cors(), usersRouter );
-app.use( '/tele', cors(), teleRouter );
 
 // catch 404 and forward to error handler
 app.use( function ( req, res, next ) {
