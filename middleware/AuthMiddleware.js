@@ -1,11 +1,16 @@
 const jwtHelper = require( "../helpers/jwt.helper" );
+const User = require( '../models/user.model' );
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "access-token-secret-example";
 
 module.exports = {
     isAuth : async ( req, res, next ) => {
         const tokenFromClient = req.body.token || req.query.token || req.headers["x-access-token"];
-        if ( tokenFromClient ) {
+        let checkExists = await User.findOne( {
+            "jwtToken.accessToken" : tokenFromClient
+        } );
+        if ( tokenFromClient && checkExists ) {
             try {
+
                 const decoded = await jwtHelper.verifyToken( tokenFromClient, accessTokenSecret );
                 req.jwtDecoded = decoded;
                 next();
@@ -19,8 +24,5 @@ module.exports = {
                 message : 'No token provided.',
             } );
         }
-    },
-    isExists : async ( req, res, next ) => {
-
     }
 };

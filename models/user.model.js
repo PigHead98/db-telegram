@@ -1,16 +1,34 @@
 const mongoose = require( 'mongoose' );
 
 const userSchema = new mongoose.Schema( {
-    name : String,
-    phone : String,
-    email : String,
-    password : String,
+    name : {
+        type : String,
+        trim : true,
+        required : true
+    },
+    phone : {
+        type : String,
+        trim : true,
+        unique : true
+    },
+    email : {
+        type : String,
+        trim : true,
+        required : true,
+        unique : true
+    },
+    password : {
+        type : String,
+        trim : true,
+        required : true
+    },
     image : String,
     apiVer : String,
-    createdAt: Number,
-    updatedAt: Number
-},{
-    timestamps: { currentTime: () => Math.floor(Date.now() / 1000) }
+    jwtToken : JSON,
+    createdAt : Number,
+    updatedAt : Number
+}, {
+    timestamps : { currentTime : () => Math.floor( Date.now() ) }
 } );
 
 const User = mongoose.model( 'user', userSchema, 'tele_users' );

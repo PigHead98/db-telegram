@@ -1,25 +1,38 @@
-const user = require( '../models/user.model' );
-const jwtHelper = require( "../helpers/jwt.helper" );
+const User = require( '../models/user.model' );
+const Response = require( '../helpers/response.helper' );
 const auth = require( "./auth.controller" );
-let tokenList = {};
 
-const md5 = require( 'md5' );
 module.exports = {
     postCheckLogin : async ( req, res, next ) => {
         try {
+            const result = await User.findOne( {
+                email : req.body.email
+            } );
+
+            const createToken = await auth.createToken( result );
+            await User.findByIdAndUpdate( result._id, {
+                "jwtToken.accessToken" : createToken.accessToken
+            } );
+
             return res.send(
-                await auth.createToken( result )
+                Response.success( createToken )
             );
         } catch ( e ) {
-            return res.send( {
-                error : e
-            } );
+            return res.send(
+                Response.failure( e.message )
+            );
         }
     },
     refreshToken : async ( req, res ) => {
-        const refreshTokenFromClient = req.body.refreshToken;
-        return res.send(
-            await auth.refreshToken( refreshTokenFromClient )
-        );
+        try {
+            const refreshTokenFromClient = req.body.refreshToken;
+            return res.send(
+                Response.success( await auth.refreshToken( refreshTokenFromClient ) )
+            );
+        } catch ( e ) {
+            return res.send(
+                Response.failure( e.message )
+            );
+        }
     }
 };

@@ -1,28 +1,34 @@
 const User = require( '../models/user.model' );
+const Response = require( '../helpers/response.helper' );
 const auth = require( "./auth.controller" );
 const md5 = require( 'md5' );
+
 module.exports = {
     index : async ( req, res, next ) => {
         let dataUsers = await User.find();
-        return res.send( {
-            dataUsers
-        } );
+        return res.send( Response.success( dataUsers ) );
     },
     register : async ( req, res, next ) => {
-        let data = req.body;
-        data.password = md5( data.password );
-        User.create( data, async ( err, onDone ) => {
-            if ( !err ) {
-                return res.send( {
-                    status : "success",
-                    result : await auth.createToken( data )
-                } );
+        try {
+            let data = req.body;
+            data.password = md5( data.password );
+
+            data.jwtToken = await auth.createToken( data );
+
+            if ( data.jwtToken.error ) {
+                // next(renderToken.error);
+                return res.send(
+                    Response.failure( data.jwtToken.error.message )
+                );
             }
-            return res.send( {
-                status : `failure ${ err }`,
-                result : data
-            } );
-        } );
+
+            let result = await User.create( data );
+
+            return res.send( Response.success( result ) );
+        } catch ( error ) {
+            return res.send(
+                Response.failure( error.message ) );
+        }
     },
     update : async ( req, res, next ) => {
         let data = {

@@ -1,23 +1,25 @@
 require( 'dotenv' ).config();
 
-const createError = require( 'http-errors' );
-const express = require( 'express' );
-const path = require( 'path' );
 const cookieParser = require( 'cookie-parser' );
+const createError = require( 'http-errors' );
+const mongoose = require( 'mongoose' );
+const express = require( 'express' );
 const logger = require( 'morgan' );
 const cors = require( 'cors' );
+const path = require( 'path' );
 
+const app = express();
 
-const mongoose = require( 'mongoose' );
-mongoose.connect( 'mongodb://localhost/db-telegram', {
-    useNewUrlParser : true,
-    useUnifiedTopology : true
-} );
+const RateLimitMiddleware = require( "./middleware/RateLimitMiddleware" );
 
 const indexRouter = require( './routes/index' );
 const usersRouter = require( './routes/users' );
 
-const app = express();
+mongoose.connect( process.env.MONGO_URI, {
+    useNewUrlParser : true,
+    useUnifiedTopology : true,
+    useFindAndModify : false
+} );
 
 // view engine setup
 app.set( 'views', path.join( __dirname, 'views' ) );
@@ -29,6 +31,10 @@ app.use( express.urlencoded( { extended : false } ) );
 app.use( cookieParser() );
 app.use( express.static( path.join( __dirname, 'public' ) ) );
 
+//limit call api
+app.use( RateLimitMiddleware.apiLimiter );
+
+//router
 app.use( '/', cors(), indexRouter );
 app.use( '/users', cors(), usersRouter );
 

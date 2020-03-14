@@ -1,8 +1,5 @@
 const jwtHelper = require( "../helpers/jwt.helper" );
-
-// Biến cục bộ trên server này sẽ lưu trữ tạm danh sách token
-// Trong dự án thực tế, nên lưu chỗ khác, có thể lưu vào Redis hoặc DB
-let tokenList = {};
+const User = require( '../models/user.model' );
 
 const accessTokenLife = process.env.ACCESS_TOKEN_LIFE || "1h";
 
@@ -15,27 +12,36 @@ const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET || "refresh-token-se
 let createToken = async ( data ) => {
     try {
         const accessToken = await jwtHelper.generateToken( data, accessTokenSecret, accessTokenLife );
-
         const refreshToken = await jwtHelper.generateToken( data, refreshTokenSecret, refreshTokenLife );
 
-        tokenList[refreshToken] = { accessToken, refreshToken };
-
-        return { data, accessToken, refreshToken };
+        return { accessToken, refreshToken };
     } catch ( error ) {
+
         return { error };
     }
 };
 
 let refreshToken = async ( refreshTokenFromClient ) => {
 
-    if (refreshTokenFromClient && (tokenList[refreshTokenFromClient])) {
+    let checkExists = await User.findOne( {
+        "jwtToken.refreshToken" : refreshTokenFromClient
+    } );
+
+    if ( refreshTokenFromClient && checkExists ) {
         try {
             // Verify kiểm tra tính hợp lệ của cái refreshToken và lấy dữ liệu giải mã decoded
             const decoded = await jwtHelper.verifyToken( refreshTokenFromClient, refreshTokenSecret );
 
-            const userFakeData = decoded.data;
-            const accessToken = await jwtHelper.generateToken( userFakeData, accessTokenSecret, accessTokenLife );
+            const userData = decoded.data;
+            const accessToken = await jwtHelper.generateToken( userData, accessTokenSecret, accessTokenLife );
+
             // gửi token mới về cho người dùng
+            await User.findOneAndUpdate( {
+                "jwtToken.refreshToken" : refreshTokenFromClient
+            }, {
+                "jwtToken.accessToken" : accessToken
+            } );
+
             return { accessToken };
         } catch ( error ) {
 
