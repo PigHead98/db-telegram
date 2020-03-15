@@ -1,46 +1,31 @@
 require( 'dotenv' ).config();
+require( './database/connect.db' );
+const modules = require( './app_module/exports.node_module' );
+const middlewares = require( './app_module/exports.midddleware' );
+const routes = require( './app_module/exports.route' );
 
-const cookieParser = require( 'cookie-parser' );
-const createError = require( 'http-errors' );
-const mongoose = require( 'mongoose' );
-const express = require( 'express' );
-const logger = require( 'morgan' );
-const cors = require( 'cors' );
-const path = require( 'path' );
-
-const app = express();
-
-const RateLimitMiddleware = require( "./middleware/RateLimitMiddleware" );
-
-const indexRouter = require( './routes/index' );
-const usersRouter = require( './routes/users' );
-
-mongoose.connect( process.env.MONGO_URI, {
-    useNewUrlParser : true,
-    useUnifiedTopology : true,
-    useFindAndModify : false
-} );
+const app = modules.express();
 
 // view engine setup
-app.set( 'views', path.join( __dirname, 'views' ) );
+app.set( 'views', modules.path.join( __dirname, 'views' ) );
 app.set( 'view engine', 'jade' );
 
-app.use( logger( 'dev' ) );
-app.use( express.json() );
-app.use( express.urlencoded( { extended : false } ) );
-app.use( cookieParser() );
-app.use( express.static( path.join( __dirname, 'public' ) ) );
+app.use( modules.logger( 'dev' ) );
+app.use( modules.express.json() );
+app.use( modules.express.urlencoded( { extended : false } ) );
+app.use( modules.cookieParser() );
+app.use( modules.express.static( modules.path.join( __dirname, 'public' ) ) );
 
 //limit call api
-app.use( RateLimitMiddleware.apiLimiter );
+app.use( middlewares.RateLimitMiddleware.apiLimiter );
 
 //router
-app.use( '/', cors(), indexRouter );
-app.use( '/users', cors(), usersRouter );
+app.use( '/', modules.cors(), routes.indexRouter );
+app.use( '/users', modules.cors(), routes.usersRouter );
 
 // catch 404 and forward to error handler
 app.use( function ( req, res, next ) {
-    next( createError( 404 ) );
+    next( modules.createError( 404 ) );
 } );
 
 // error handler

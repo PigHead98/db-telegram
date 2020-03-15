@@ -31,19 +31,16 @@ module.exports = {
         }
     },
     update : async ( req, res, next ) => {
-        let data = {
-            name : "test_u",
-            phone : "test_u",
-            email : "test_u",
-            password : "test_u",
-            image : "test_u",
-        };
+        try {
+            const data = req.body;
+            data.password = md5( data.password );
+            let result = await User.updateOne( { _id : req.params.userId }, { $set : data } );
 
-        User.updateOne( { _id : '5e6b3c991632ac35c085c8da' }, { $set : data }, function ( err, onDone ) {
-            if ( err ) throw err;
-            return res.send( {
-                status : 'success'
-            } );
-        } );
+            return res.send(
+                Response.success( result )
+            );
+        } catch ( e ) {
+            return res.send( Response.failure( e.message ) );
+        }
     }
 };

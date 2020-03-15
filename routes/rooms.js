@@ -12,7 +12,7 @@ const RateLimitMiddleware = require( "../middleware/RateLimitMiddleware" );
 /* GET users listing. */
 router.get( '/', UserController.index );
 
-router.post( '/register',
+router.post( '/create',
     RateLimitMiddleware.createAccountLimiter,
     UserMiddleWare.validRegister,
     UserController.register

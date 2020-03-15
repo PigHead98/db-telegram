@@ -45,6 +45,37 @@ module.exports = {
 
         next();
     },
+    validUpdate : async ( req, res, next ) => {
+        const data = req.body;
+
+        let error = [];
+
+        ( data.email )
+        &&
+        error.push( {
+            email : `email is not change`
+        } );
+
+        validator.isEmpty( data.name )
+        &&
+        error.push( {
+            password : `name is required`
+        } );
+
+        validator.isEmpty( data.password )
+        &&
+        error.push( {
+            password : `password is required`
+        } );
+
+        if ( error.length > 0 ) {
+            return res.send(
+                Response.failure( error )
+            );
+        }
+
+        next();
+    },
     validLogin : async ( req, res, next ) => {
         const result = await User.findOne( {
             email : req.body.email
