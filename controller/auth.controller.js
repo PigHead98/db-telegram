@@ -14,7 +14,7 @@ let createToken = async ( data ) => {
         const accessToken = await jwtHelper.generateToken( data, accessTokenSecret, accessTokenLife );
         const refreshToken = await jwtHelper.generateToken( data, refreshTokenSecret, refreshTokenLife );
 
-        return { accessToken, refreshToken };
+        return { accessToken, refreshTokens };
     } catch ( error ) {
 
         return { error };

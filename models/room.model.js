@@ -19,11 +19,11 @@ const roomSchema = new mongoose.Schema( {
             default : true
         }
     },
-    messages : {
-        type : Number,
-        default : true
+    messages : Array,
+    users : {
+        type : Array,
+        required : true
     },
-    users : Array,
     createdAt : Number,
     updatedAt : Number
 }, {

@@ -2,7 +2,7 @@ const express = require( 'express' );
 const router = express.Router();
 
 const LoginController = require( '../controller/login.controller' );
-const RoomController = require( '../controller/room.controller' );
+const MessageController = require( '../controller/message.controller' );
 const AuthController = require( "../controller/auth.controller" );
 
 const AuthMiddleWare = require( "../middleware/AuthMiddleware" );
@@ -10,17 +10,17 @@ const UserMiddleWare = require( "../middleware/UserMiddleware" );
 const RateLimitMiddleware = require( "../middleware/RateLimitMiddleware" );
 
 /* GET users listing. */
-router.get( '/', RoomController.getRooms );
+router.get( '/', MessageController.getMessages );
 
 router.post( '/create',
-    RoomController.postCreateRoom
+    MessageController.postCreateMessage
 );
 
-router.post( '/update/:roomId',
-    RoomController.postUpdateRoom
+router.post( '/update/:MessageId',
+    MessageController.postUpdateMessage
 );
-router.post( '/del/:roomId',
-    RoomController.postDelRoom
+router.post( '/del/:MessageId',
+    MessageController.postDelMessage
 );
 
 module.exports = router;

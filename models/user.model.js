@@ -9,8 +9,10 @@ const userSchema = new mongoose.Schema( {
     },
     phone : {
         type : String,
-        trim : true,
-        unique : true
+        require : true,
+        index : true,
+        unique : true,
+        sparse : true
     },
     email : {
         type : String,
@@ -24,7 +26,10 @@ const userSchema = new mongoose.Schema( {
         trim : true,
         required : true
     },
-    image : String,
+    avatar : {
+        type : String,
+        default : "avatar"
+    },
     apiVer : String,
     jwtToken : JSON,
     state : {

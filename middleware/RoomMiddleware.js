@@ -1,64 +1,65 @@
+const { checkSchema } = require( 'express-validator' );
 const validator = require( 'validator' );
 const User = require( '../models/user.model' );
 const Response = require( '../helpers/response.helper' );
 const md5 = require( 'md5' );
 
 module.exports = {
-    validRegister : async ( req, res, next ) => {
+    validSchema : checkSchema({
+        name : {
+            type : String,
+            trim : true,
+            lowercase : true,
+            required : true
+        },
+        topic : String,
+        avatar : String,
+        state : {
+            online : {
+                type : Boolean,
+                default : false
+            },
+            available : {
+                type : Boolean,
+                default : true
+            }
+        },
+        messages : Array,
+        users : Array,
+    }),
+    validCreate : async ( req, res, next ) => {
         const data = req.body;
 
-        let error = {};
-
-        !validator.isEmail( data.email )
-        &&
-        Object.assign( error, { email : `email is wrong format` } );
-
-        !data.name
-        &&
-        Object.assign( error, { name : `name is required` } );
-
-        ( !data.password || data.password.length < 8 )
-        &&
-        Object.assign( error, { password : `password is wrong format` } );
-
-        let checkExists = await User.findOne( { email : data.email } );
-
-        if ( checkExists ) {
-            return res.status( 401 ).send(
-                Response.failure( {
-                    email : `email already used`
-                } )
-            );
-        }
-
-        if ( Object.keys( error ).length > 0 ) {
-
-            return res.status( 401 ).send(
-                Response.failure( error )
-            );
-        }
+        let error = [];
 
         next();
     },
     validUpdate : async ( req, res, next ) => {
         const data = req.body;
-        let error = {};
+        console.log( 2 );
+        let error = [];
 
         ( data.email )
         &&
-        Object.assign( error, { email : `email is not change` } );
+        error.push( {
+            email : `email is not change`
+        } );
 
         validator.isEmpty( data.name )
         &&
-        Object.assign( error, { name : `name is required` } );
+        error.push( {
+            name : `name is required`
+        } );
 
         data.password
         &&
         validator.isEmpty( data.password )
         &&
-        Object.assign( error, { password : `password is required` } );
+        error.push( {
+            password : `password is required`
+        } );
 
-        if ( Object.keys( error ).length > 0 ) {
+        if ( error.length > 0 ) {
             return res.status( 401 ).send(
                 Response.failure( error )
             );
@@ -66,7 +67,7 @@ module.exports = {
 
         if ( data.password )
             req.body.password = md5( data.password );
-
+        console.log( 1 );
         next();
     },
     validLogin : async ( req, res, next ) => {
