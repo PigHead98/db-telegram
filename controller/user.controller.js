@@ -13,7 +13,7 @@ module.exports = {
             next( e )
         }
     },
-    register : async ( req, res, next ) => {
+    register : async ( req, res ) => {
         try {
             let data = req.body;
             data.password = md5( data.password );
@@ -22,9 +22,7 @@ module.exports = {
             if ( data.jwtToken.error ) {
                 // next(renderToken.error);
                 return res.status( 401 ).send(
-                    failure( {
-                        message : data.jwtToken.error.message
-                    } )
+                    failure( data.jwtToken.error.message, `createToken_fails` )
                 );
             }
 
@@ -35,12 +33,10 @@ module.exports = {
             return res.send( success( getDataBy( result, "contacts", "id", "name", "email", "jwtToken", ) ) );
         } catch ( error ) {
             return res.status( 401 ).send(
-                failure( {
-                    message : error.message
-                } ) );
+                failure( error.message, `register_fails` ) );
         }
     },
-    update : async ( req, res, next ) => {
+    update : async ( req, res ) => {
         try {
             const data = req.body;
 
@@ -55,7 +51,7 @@ module.exports = {
             } ) );
         }
     },
-    search_contact : async ( req, res, next ) => {
+    search_contact : async ( req, res ) => {
         try {
             let result = await User.findOne( {
                 $or : [
@@ -70,6 +66,39 @@ module.exports = {
 
             return res.send(
                 success( result )
+            );
+
+        } catch ( e ) {
+            return res.status( 401 ).send( failure( {
+                message : e.message
+            } ) );
+        }
+    },
+    update_contact : async ( req, res ) => {
+        try {
+            let update;
+            switch ( req.params.update ) {
+                case "add" :
+                    update = {
+                        $addToSet : {
+                            "contacts" : req.params.to
+                        }
+                    };
+                    break;
+                case "remove" :
+                    update = {
+                        $pull : {
+                            "contacts" : req.params.to
+                        }
+                    };
+                    break;
+                default:
+                    return res.status( 401 ).send( failure( `This route only use for remove or add`, 'route_fails' ) );
+            }
+            const updateUser = await User.findByIdAndUpdate( req.params.from, update, { new : true } );
+
+            return res.send(
+                success( getDataBy( updateUser, "contacts" ) )
             );
 
         } catch ( e ) {

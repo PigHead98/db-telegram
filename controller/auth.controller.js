@@ -14,9 +14,8 @@ let createToken = async ( data ) => {
         const accessToken = await jwtHelper.generateToken( data, accessTokenSecret, accessTokenLife );
         const refreshToken = await jwtHelper.generateToken( data, refreshTokenSecret, refreshTokenLife );
 
-        return { accessToken, refreshTokens };
+        return { accessToken, refreshToken };
     } catch ( error ) {
-
         return { error };
     }
 };
@@ -35,7 +34,7 @@ let refreshToken = async ( refreshTokenFromClient ) => {
             const userData = decoded.data;
             const accessToken = await jwtHelper.generateToken( userData, accessTokenSecret, accessTokenLife );
 
-            // gửi token mới về cho người dùng
+            // update db và gửi token mới về cho người dùng
             await User.findOneAndUpdate( {
                 "jwtToken.refreshToken" : refreshTokenFromClient
             }, {
@@ -44,14 +43,13 @@ let refreshToken = async ( refreshTokenFromClient ) => {
 
             return { accessToken };
         } catch ( error ) {
-
             return {
-                message : 'Invalid refresh token.',
+                error : error.message,
             };
         }
     } else {
         return {
-            message : 'No token provided.',
+            error : 'refresh token fails',
         };
     }
 };

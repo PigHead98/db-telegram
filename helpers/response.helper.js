@@ -2,13 +2,14 @@ module.exports = {
     success : ( data ) => {
         return {
             status : 'success',
-            result : data
+            message : data
         }
     },
-    failure : ( error ) => {
+    failure : ( error, message = 'request_fails' ) => {
         return {
             status : 'failure',
-            error : error
+            message : message,
+            description : error
         }
     },
 };

@@ -1,6 +1,6 @@
 const validator = require( 'validator' );
 const User = require( '../models/user.model' );
-const Response = require( '../helpers/response.helper' );
+const { success, failure } = require( '../helpers/response.helper' );
 const md5 = require( 'md5' );
 
 module.exports = {
@@ -17,7 +17,7 @@ module.exports = {
         &&
         Object.assign( error, { name : `name is required` } );
 
-        ( !data.password || data.password.length < 8 )
+        ( !data.password || data.password.toString().length < 8 )
         &&
         Object.assign( error, { password : `password is wrong format` } );
 
@@ -25,49 +25,44 @@ module.exports = {
 
         if ( checkExists ) {
             return res.status( 401 ).send(
-                Response.failure( {
-                    email : `email already used`
-                } )
+                failure( `email already used`, `email_exists`
+                )
             );
         }
 
         if ( Object.keys( error ).length > 0 ) {
 
             return res.status( 401 ).send(
-                Response.failure( error )
+                failure( error, `data_wrong` )
             );
         }
 
         next();
     },
-    validUpdate : async ( req, res, next ) => {
-        const data = req.body;
-        let error = {};
+    validUpdate : ( req, res, next ) => {
+        try {
+            const data = req.body;
+            delete data["email"]; //not change email
 
-        ( data.email )
-        &&
-        Object.assign( error, { email : `email is not change` } );
+            !data.name
+            &&
+            delete data["name"];
 
-        validator.isEmpty( data.name )
-        &&
-        Object.assign( error, { name : `name is required` } );
+            ( !data.password || data.password.toString().length < 8 )
+            &&
+            delete data["password"];
 
-        data.password
-        &&
-        validator.isEmpty( data.password )
-        &&
-        Object.assign( error, { password : `password is required` } );
+            console.log( data );
+            if ( data.password )
+                req.body.password = md5( data.password );
 
-        if ( Object.keys( error ).length > 0 ) {
+            next();
+        } catch ( e ) {
             return res.status( 401 ).send(
-                Response.failure( error )
+                failure( e.message )
             );
         }
 
-        if ( data.password )
-            req.body.password = md5( data.password );
-
-        next();
     },
     validLogin : async ( req, res, next ) => {
         const result = await User.findOne( {
@@ -76,20 +71,20 @@ module.exports = {
 
         if ( !result ) {
             return res.status( 401 ).send(
-                Response.failure( {
+                failure( {
                     email : "email is invalid",
-                    data : req.body
-                } )
+                    data : req.body.email
+                }, `email_invalid` )
             );
         }
 
         if ( result.password !== md5( req.body.password ) ) {
-            return res.status( 401 ).send( {
-                error : {
-                    password : "password is invalid"
-                },
-                data : req.body
-            } );
+            return res.status( 401 ).send(
+                failure( {
+                    password : "password is invalid",
+                    data : req.body.password
+                }, `password_invalid` )
+            );
         }
 
         next();

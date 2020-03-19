@@ -1,5 +1,6 @@
 const User = require( '../models/user.model' );
-const Response = require( '../helpers/response.helper' );
+const { success, failure } = require( '../helpers/response.helper' );
+const { getDataBy } = require( '../helpers/getDataResponse.helper' );
 const auth = require( "./auth.controller" );
 
 module.exports = {
@@ -10,28 +11,38 @@ module.exports = {
             } );
 
             const createToken = await auth.createToken( result );
-            await User.findByIdAndUpdate( result._id, {
+
+            const updateToken = await User.findByIdAndUpdate( result._id, {
                 "jwtToken.accessToken" : createToken.accessToken
-            } );
+            }, { new : true } );
 
             return res.send(
-                Response.success( createToken )
+                success( getDataBy( updateToken, "avatar", "_id", "contacts", "email", "jwtToken", "name" ) )
             );
         } catch ( e ) {
             return res.send(
-                Response.failure( e.message )
+                failure( e.message )
             );
         }
     },
     refreshToken : async ( req, res ) => {
         try {
             const refreshTokenFromClient = req.body.refreshToken;
+
+            const refreshToken = await auth.refreshToken( refreshTokenFromClient );
+
+            if ( refreshToken.error ) {
+                return res.send(
+                    failure( refreshToken.error, `refreshToken_fails` )
+                );
+            }
+
             return res.send(
-                Response.success( await auth.refreshToken( refreshTokenFromClient ) )
+                success( refreshToken )
             );
         } catch ( e ) {
             return res.send(
-                Response.failure( e.message )
+                failure( e.message, `refreshToken_fails` )
             );
         }
     }
