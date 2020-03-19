@@ -43,16 +43,29 @@ module.exports = {
         try {
             const data = req.body;
             delete data["email"]; //not change email
+            delete data["jwtToken"]; //not change jwtToken
+            delete data["contacts"]; //not change contacts
 
             !data.name
             &&
             delete data["name"];
 
+            !data.phone
+            &&
+            delete data["phone"];
+
+            !data.avatar
+            &&
+            delete data["avatar"];
+
+            !data.apiVer
+            &&
+            delete data["apiVer"];
+
             ( !data.password || data.password.toString().length < 8 )
             &&
             delete data["password"];
 
-            console.log( data );
             if ( data.password )
                 req.body.password = md5( data.password );
 
