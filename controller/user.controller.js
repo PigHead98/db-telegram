@@ -28,9 +28,7 @@ module.exports = {
 
             let result = await User.create( data );
 
-            result.id = result._id;
-
-            return res.send( success( getDataBy( result, "contacts", "id", "name", "email", "jwtToken", ) ) );
+            return res.send( success( getDataBy( result, "contacts", "_id", "name", "email", "jwtToken", ) ) );
         } catch ( error ) {
             return res.status( 401 ).send(
                 failure( error.message, `register_fails` ) );
@@ -106,5 +104,10 @@ module.exports = {
                 message : e.message
             } ) );
         }
+    },
+    update_avatar : async ( userId, path ) => {
+        return result = await User.findByIdAndUpdate( userId, {
+            $set : { "avatar" : path }
+        }, { new : true } );
     }
 };

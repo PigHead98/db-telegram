@@ -6,6 +6,7 @@ const _axios = require( 'axios' );
 const _cors = require( 'cors' );
 const _path = require( 'path' );
 const _http = require( 'http' );
+const _multer = require( 'multer' );
 const _io = require( 'socket.io' );
 
 module.exports = {
@@ -18,4 +19,5 @@ module.exports = {
     path : _path,
     http : _http,
     io : _io,
+    multer : _multer
 };

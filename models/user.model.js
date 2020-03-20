@@ -28,14 +28,14 @@ const userSchema = new mongoose.Schema( {
     },
     avatar : {
         type : String,
-        default : "avatar"
+        default : null
     },
     apiVer : String,
     jwtToken : JSON,
     state : {
         online : {
             type : Boolean,
-            default : false
+            default : true
         },
         available : {
             type : Boolean,

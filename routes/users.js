@@ -1,13 +1,14 @@
 const express = require( 'express' );
+
 const router = express.Router();
 
 const LoginController = require( '../controller/login.controller' );
 const UserController = require( '../controller/user.controller' );
 const AuthController = require( "../controller/auth.controller" );
 
-const AuthMiddleWare = require( "../middleware/AuthMiddleware" );
-const UserMiddleWare = require( "../middleware/UserMiddleware" );
-const RateLimitMiddleware = require( "../middleware/RateLimitMiddleware" );
+const AuthMiddleWare = require( "../middleware/AuthMiddleware" ); // check jwt token
+const UserMiddleWare = require( "../middleware/UserMiddleware" ); // valid data from client
+const RateLimitMiddleware = require( "../middleware/RateLimitMiddleware" ); // limit request
 
 /* GET users listing. */
 router.get( '/:userId?', UserController.index );
@@ -37,6 +38,11 @@ router.post( '/login',
     // RateLimitMiddleware.loginAccountLimiter,
     UserMiddleWare.validLogin,
     LoginController.postCheckLogin
+);
+
+router.get( '/logout/:userId',
+    UserMiddleWare.validLogout,
+    LoginController.postLogout
 );
 
 router.post( '/refresh-token',

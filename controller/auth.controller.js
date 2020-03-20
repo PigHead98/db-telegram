@@ -11,6 +11,7 @@ const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET || "refresh-token-se
 
 let createToken = async ( data ) => {
     try {
+        //generate token
         const accessToken = await jwtHelper.generateToken( data, accessTokenSecret, accessTokenLife );
         const refreshToken = await jwtHelper.generateToken( data, refreshTokenSecret, refreshTokenLife );
 
@@ -21,11 +22,12 @@ let createToken = async ( data ) => {
 };
 
 let refreshToken = async ( refreshTokenFromClient ) => {
-
+    //find user by token to check exists in db
     let checkExists = await User.findOne( {
         "jwtToken.refreshToken" : refreshTokenFromClient
     } );
 
+    // have refresh token from Client and exists in db
     if ( refreshTokenFromClient && checkExists ) {
         try {
             // Verify kiểm tra tính hợp lệ của cái refreshToken và lấy dữ liệu giải mã decoded

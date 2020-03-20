@@ -4,7 +4,7 @@ const { getDataBy } = require( '../helpers/getDataResponse.helper' );
 const auth = require( "./auth.controller" );
 
 module.exports = {
-    postCheckLogin : async ( req, res, next ) => {
+    postCheckLogin : async ( req, res ) => {
         try {
             const result = await User.findOne( {
                 email : req.body.email
@@ -13,11 +13,35 @@ module.exports = {
             const createToken = await auth.createToken( result );
 
             const updateToken = await User.findByIdAndUpdate( result._id, {
-                "jwtToken.accessToken" : createToken.accessToken
+                "jwtToken.accessToken" : createToken.accessToken,
+                "state.online" : true
             }, { new : true } );
 
             return res.send(
-                success( getDataBy( updateToken, "avatar", "_id", "contacts", "email", "jwtToken", "name" ) )
+                success( {
+                        ...getDataBy( updateToken, "name", "_id", "contacts", "email", "avatar" ),
+                        accessToken : createToken.accessToken,
+                        refreshToken : createToken.refreshToken
+                    }
+                )
+            );
+        } catch ( e ) {
+            return res.send(
+                failure( e.message )
+            );
+        }
+    },
+    postLogout : async ( req, res ) => {
+        try {
+            const updateToken = await User.findByIdAndUpdate( req.params.userId, {
+                "jwtToken.accessToken" : null,
+                "state.online" : false
+            }, { new : true } );
+
+            return res.send(
+                success(
+                    `logout`
+                )
             );
         } catch ( e ) {
             return res.send(

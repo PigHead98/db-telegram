@@ -1,4 +1,4 @@
-const validator = require( 'validator' );
+const { isEmail, isMongoId } = require( 'validator' );
 const User = require( '../models/user.model' );
 const { success, failure } = require( '../helpers/response.helper' );
 const md5 = require( 'md5' );
@@ -9,7 +9,7 @@ module.exports = {
 
         let error = {};
 
-        !validator.isEmail( data.email )
+        !isEmail( data.email )
         &&
         Object.assign( error, { email : `email is wrong format` } );
 
@@ -41,10 +41,16 @@ module.exports = {
     },
     validUpdate : ( req, res, next ) => {
         try {
+            if ( !isMongoId( req.params.userId ) ) {
+                return res.status( 403 ).send(
+                    failure( `user id wrong format`, `userId_wrong` )
+                );
+            }
             const data = req.body;
-            delete data["email"]; //not change email
-            delete data["jwtToken"]; //not change jwtToken
-            delete data["contacts"]; //not change contacts
+            delete data["email"]; //not change email in this route
+            delete data["jwtToken"]; //not change jwtToken in this route
+            delete data["contacts"]; //not change contacts in this route
+            delete data["avatar"]; //not change avatar in this route
 
             !data.name
             &&
@@ -53,10 +59,6 @@ module.exports = {
             !data.phone
             &&
             delete data["phone"];
-
-            !data.avatar
-            &&
-            delete data["avatar"];
 
             !data.apiVer
             &&
@@ -97,6 +99,15 @@ module.exports = {
                     password : "password is invalid",
                     data : req.body.password
                 }, `password_invalid` )
+            );
+        }
+
+        next();
+    },
+    validLogout : async ( req, res, next ) => {
+        if ( !isMongoId( req.params.userId ) ) {
+            return res.status( 403 ).send(
+                failure( `user id wrong format`, `userId_wrong` )
             );
         }
 
