@@ -1,6 +1,6 @@
 const mongoose = require( 'mongoose' );
 
-mongoose.connect( process.env.MONGO_URI || 'mongodb://localhost/db-telegram', {
+mongoose.connect( process.env.MONGODB_URI || 'mongodb://localhost/db-telegram', {
     useNewUrlParser : true,
     useUnifiedTopology : true,
     useFindAndModify : false,
