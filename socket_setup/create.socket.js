@@ -3,6 +3,28 @@ const io = require( 'socket.io' )( server );
 const { axios } = require( '../app_module/node_module.exports' );
 
 let interval;
+let key = "5e76242b8163472ec88fc4a0";
+
+const getData = async ( socket, data ) => {
+    try {
+        const res = await axios.get(
+            "http://localhost:8888/rooms"
+        );
+
+        const saveMess = await axios.post(
+            "http://localhost:8888/messages/create", { messageBody : data }
+        );
+        console.log( saveMess.data );
+        let listIdRooms = res.data.message;
+
+        listIdRooms.map( item => {
+            io.emit( item._id, data );
+        } );
+
+    } catch ( e ) {
+        console.log( e.message )
+    }
+};
 
 io.on( "connection", socket => {
     console.log( "New client connected" );
@@ -10,10 +32,10 @@ io.on( "connection", socket => {
         clearInterval( interval );
     }
 
-    socket.emit( "FromAPI", "serve" );
 
-    socket.on( "SendMessage", ( data ) => {
-        io.emit( "SendMessage", data );
+    socket.on( key, ( data ) => {
+        getData( socket, data );
+        // io.emit( key, data );
     } );
 
 
