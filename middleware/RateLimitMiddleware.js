@@ -3,7 +3,7 @@ const MongoStore = require( 'rate-limit-mongo' );
 
 const _apiLimiter = rateLimit( {
     store : new MongoStore( {
-        uri : process.env.MONGO_URI,
+        uri : process.env.MONGODB_URI,
         resetExpireDateOnChange : true
     } ),
     windowMs : 15 * 60 * 1000,
@@ -14,7 +14,7 @@ const _apiLimiter = rateLimit( {
 
 const _createAccountLimiter = rateLimit( {
     store : new MongoStore( {
-        uri : process.env.MONGO_URI,
+        uri : process.env.MONGODB_URI,
         resetExpireDateOnChange : true
     } ),
     windowMs : 60 * 1000,
@@ -25,7 +25,7 @@ const _createAccountLimiter = rateLimit( {
 
 const _loginAccountLimiter = rateLimit( {
     store : new MongoStore( {
-        uri : process.env.MONGO_URI,
+        uri : process.env.MONGODB_URI,
         resetExpireDateOnChange : true
     } ),
     skipSuccessfulRequests : true,
