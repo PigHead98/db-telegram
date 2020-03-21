@@ -36,7 +36,7 @@ module.exports = {
     },
     validUpdate : async ( req, res, next ) => {
         const data = req.body;
-        console.log( 2 );
+
         let error = [];
 
         ( data.email )

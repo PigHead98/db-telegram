@@ -9,7 +9,15 @@ io.on( "connection", socket => {
     if ( interval ) {
         clearInterval( interval );
     }
-    interval = setInterval( () => getApiAndEmit( socket ), 100000 );
+
+    socket.emit( "FromAPI", "serve" );
+
+    socket.on( "SendMessage", ( data ) => {
+        io.emit( "SendMessage", data );
+    } );
+
+
+    // interval = setInterval( () => getApiAndEmit( socket ), 100000 );
     socket.on( "disconnect", () => {
         console.log( "Client disconnected" );
     } );

@@ -1,41 +1,57 @@
-`clone project`
+`This project have been publicized on `
 
-`install package`
-npm install
+https://express-server-chat.herokuapp.com
+##
+`The front-end is developing at `
 
-`start with nodemon`
-npm run dev
+https://github.com/PigHead98/react-chat
+##
+
+
+clone project at
+
+https://github.com/PigHead98/db-telegram
+##
 
     `local route: 127.0.0.1:port`
 
 
-`config db at`
--- database/
+install package
+`npm install`
 
-`all routes `
--- routes/
+start with nodemon
+`npm run dev`
 
-`all app modules imports and exports at `
--- app_module/
+config db at
+`database/`
 
-`all app setups at `
--- app_setup/
+config env at
+`.env.example`
 
-`all app controllers at `
--- controller/
+all routes 
+`routes/`
 
-`all app models at `
--- models/
+all app modules imports and exports at 
+`app_module/`
 
-`all app middewares at `
--- middleware/
+all app setups at
+`app_setup/`
 
-`all app helper at `
--- helper/
+all app controllers at
+`controller/`
 
-`all static file at `
--- public/
+all app models at
+`models/`
 
-`all socket setup at`
--- socket_setup/
+all app middewares at
+`middleware/`
+
+all app helper at
+`helper/`
+
+all static file at
+`public/`
+
+all socket setup at
+`socket_setup/`
 
