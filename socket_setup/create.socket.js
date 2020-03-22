@@ -1,41 +1,42 @@
 const server = require( '../server' );
 const io = require( 'socket.io' )( server );
+const Room = require( '../models/room.model' );
+const Message = require( '../models/message.model' );
 const { axios } = require( '../app_module/node_module.exports' );
 
 let interval;
-let key = "5e76242b8163472ec88fc4a0";
+const key = "5e76242b8163472ec88fc4a0";
+const key2 = async () => {
+    return await Room.find( {
+        "state.available" : process.env.STATUS_ACTIVE
+    } );
+};
 
-const getData = async ( socket, data ) => {
+const getData = async ( socket, key, data ) => {
     try {
-        const res = await axios.get(
-            "http://localhost:8888/rooms"
-        );
-
-        const saveMess = await axios.post(
-            "http://localhost:8888/messages/create", { messageBody : data }
-        );
-        console.log( saveMess.data );
-        let listIdRooms = res.data.message;
-
-        listIdRooms.map( item => {
-            io.emit( item._id, data );
+        const saveMess = await Message.create( {
+            messageBody : data
         } );
-
+        // io.emit( key, data );
     } catch ( e ) {
         console.log( e.message )
     }
 };
 
-io.on( "connection", socket => {
+io.on( "connection", async socket => {
     console.log( "New client connected" );
     if ( interval ) {
         clearInterval( interval );
     }
 
+    let test = await key2();
 
-    socket.on( key, ( data ) => {
-        getData( socket, data );
-        // io.emit( key, data );
+    test.map( async item => {
+        let key = await item._id;
+        socket.on( key, ( data ) => {
+            getData( socket, key, data );
+            io.emit( key, data );
+        } );
     } );
 
 
