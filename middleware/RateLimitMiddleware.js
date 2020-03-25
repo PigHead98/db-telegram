@@ -1,6 +1,9 @@
 const rateLimit = require( "express-rate-limit" );
+
+//save history request at db
 const MongoStore = require( 'rate-limit-mongo' );
 
+//max 100 req to api in 15min
 const _apiLimiter = rateLimit( {
     store : new MongoStore( {
         uri : process.env.MONGODB_URI,
@@ -12,6 +15,7 @@ const _apiLimiter = rateLimit( {
         "Too many accounts created from this IP, please try again after 15min"
 } );
 
+//limit register account
 const _createAccountLimiter = rateLimit( {
     store : new MongoStore( {
         uri : process.env.MONGODB_URI,
@@ -23,6 +27,7 @@ const _createAccountLimiter = rateLimit( {
         "Too many accounts created from this IP, please try again after 1min"
 } );
 
+//limit login, 5 times at 15min
 const _loginAccountLimiter = rateLimit( {
     store : new MongoStore( {
         uri : process.env.MONGODB_URI,

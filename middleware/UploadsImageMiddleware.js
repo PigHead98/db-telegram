@@ -3,6 +3,7 @@ const { multer } = require( '../app_module/node_module.exports' );
 const { success, failure } = require( '../helpers/response.helper' );
 const { getDataBy } = require( '../helpers/getDataResponse.helper' );
 
+// setup storage and create filename
 const storage = multer.diskStorage( {
         destination : 'public/assets/img/avatar',
         filename : ( req, file, callback ) => {
@@ -13,7 +14,7 @@ const storage = multer.diskStorage( {
 ;
 
 let fileFilter = function ( req, file, cb ) {
-    var allowedMimes = [ 'image/jpeg', 'image/pjpeg', 'image/png' ];
+    var allowedMimes = [ 'image/jpeg', 'image/pjpeg', 'image/png' ]; // check type image
     if ( allowedMimes.includes( file.mimetype ) ) {
         cb( null, true );
     } else {
@@ -27,7 +28,7 @@ let fileFilter = function ( req, file, cb ) {
 let obj = {
     storage : storage,
     limits : {
-        fileSize : 2000 * 1024
+        fileSize : 2000 * 1024 //custom size
     },
     fileFilter : fileFilter
 };
@@ -47,8 +48,10 @@ module.exports.imageUpload = ( req, res, next ) => {
                 res.status( 500 ).send( failure( 'file not found', '404' ) );
             }
 
+            //rename to save filename in db. It's will be (../public path/filename)
             let pathFile = '../' + req.file.path.split( "\\" ).slice( 1 ).join( "/" );
 
+            //req.params.userId is user id who upload file
             update_avatar( req.params.userId, pathFile )
                 .then( onDone => {
                     return res.status( 200 ).send( success( onDone.avatar ) )

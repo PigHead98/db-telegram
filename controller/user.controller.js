@@ -15,10 +15,14 @@ module.exports = {
     },
     register : async ( req, res ) => {
         try {
+            // get data form client
             let data = req.body;
-            data.password = md5( data.password );
-            data.jwtToken = await auth.createToken( data );
 
+            // all data was checked by middleware so here only to save at db
+            data.password = md5( data.password ); // encode md5
+            data.jwtToken = await auth.createToken( data ); // create token jwt to check auth user
+
+            // when have error at create token
             if ( data.jwtToken.error ) {
                 // next(renderToken.error);
                 return res.status( 401 ).send(
@@ -51,6 +55,7 @@ module.exports = {
     },
     search_contact : async ( req, res ) => {
         try {
+            // this api to response contact when client search ( by email or phone )
             let result = await User.findOne( {
                 $or : [
                     {
@@ -74,6 +79,7 @@ module.exports = {
     },
     update_contact : async ( req, res ) => {
         try {
+            // this api to do 2 mission that are add contact or remove contact from list user contact
             let update;
             switch ( req.params.update ) {
                 case "add" :

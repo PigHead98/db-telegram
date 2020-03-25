@@ -4,8 +4,14 @@ const User = require( '../models/user.model' );
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "access-token-secret-example";
 
 module.exports = {
+
+    // use this to check user have accept token
     isAuth : async ( req, res, next ) => {
+
+        //get token form client
         const tokenFromClient = req.body.token || req.query.token || req.headers["x-access-token"];
+
+        //check token in db
         const checkExists = await User.findOne( {
             "jwtToken.accessToken" : tokenFromClient
         } );
@@ -13,6 +19,7 @@ module.exports = {
         if ( tokenFromClient && checkExists ) {
             try {
 
+                // verify token to check accept token
                 const decoded = await jwtHelper.verifyToken( tokenFromClient, accessTokenSecret );
                 req.jwtDecoded = decoded;
                 next();
