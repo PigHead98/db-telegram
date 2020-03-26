@@ -1,4 +1,4 @@
-const _rateLimitMiddleware = require( "../middleware/RateLimitMiddleware" );
+const _rateLimitMiddleware = require( "../middleware/rateLimit.middleware" );
 
 module.exports = {
     RateLimitMiddleware : _rateLimitMiddleware,

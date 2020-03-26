@@ -6,9 +6,9 @@ const LoginController = require( '../controller/login.controller' );
 const UserController = require( '../controller/user.controller' );
 const AuthController = require( "../controller/auth.controller" );
 
-const AuthMiddleWare = require( "../middleware/AuthMiddleware" ); // check jwt token
-const UserMiddleWare = require( "../middleware/UserMiddleware" ); // valid data from client
-const RateLimitMiddleware = require( "../middleware/RateLimitMiddleware" ); // limit request
+const AuthMiddleWare = require( "../middleware/auth.middleware" ); // check jwt token
+const UserMiddleWare = require( "../middleware/user.middleware" ); // valid data from client
+const RateLimitMiddleware = require( "../middleware/rateLimit.middleware" ); // limit request
 
 /* GET users listing. */
 router.get( '/:userId?', UserController.index );

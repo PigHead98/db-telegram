@@ -5,9 +5,9 @@ const LoginController = require( '../controller/login.controller' );
 const MessageController = require( '../controller/message.controller' );
 const AuthController = require( "../controller/auth.controller" );
 
-const AuthMiddleWare = require( "../middleware/AuthMiddleware" );
-const UserMiddleWare = require( "../middleware/UserMiddleware" );
-const RateLimitMiddleware = require( "../middleware/RateLimitMiddleware" );
+const AuthMiddleWare = require( "../middleware/auth.middleware" );
+const UserMiddleWare = require( "../middleware/user.middleware" );
+const RateLimitMiddleware = require( "../middleware/rateLimit.middleware" );
 
 /* GET users listing. */
 router.get( '/', MessageController.getMessages );

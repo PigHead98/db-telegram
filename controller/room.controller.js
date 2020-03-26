@@ -50,20 +50,16 @@ module.exports = {
     },
     findOrCreateChatRoom : async ( req, res ) => {
         try {
-            // this api to do 2 get room have only 2 user (normal mess)
+            const { from, to } = req.body;
+            // this api to do 2 get or create room for only 2 user (normal mess)
 
-            // find room that have users [ userId1,userId2 ]
+            // only rooms for 2 users named idUser1 + idUser2
             const getRoomUser = await Room.findOne( {
                 $or : [
-                    {
-                        users :
-                            [ req.params.from, req.params.to ]
-                    },
-                    {
-                        users :
-                            [ req.params.to, req.params.from ]
-                    }
+                    { name : from + to },
+                    { name : to + from }
                 ]
+
             } );
 
             if ( getRoomUser ) {
@@ -72,7 +68,7 @@ module.exports = {
                 );
             }
 
-            const createRoom = await Room.create( { users : [ req.params.from, req.params.to ] } );
+            const createRoom = await Room.create( { name : from + to, users : [ from, to ] } );
 
             return res.send(
                 success( getDataBy( createRoom, "_id", "users" ) )

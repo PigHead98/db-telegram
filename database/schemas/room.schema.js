@@ -23,6 +23,10 @@ const roomSchema = new mongoose.Schema( {
         type : Array,
         required : true
     },
+    typeRoom : {
+        type : Number,
+        default : process.env.TYPE_ROOM_2_USERS // room 2 users is 0, multi user are 1
+    },
     createdAt : Number,
     updatedAt : Number
 }, {

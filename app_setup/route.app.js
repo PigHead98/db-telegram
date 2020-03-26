@@ -1,6 +1,6 @@
 const app = require( './app' );
 const { cors } = require( '../app_module/node_module.exports' );
-const { isAuth } = require( "../middleware/AuthMiddleware" );
+const { isAuth } = require( "../middleware/auth.middleware" );
 const {
     indexRouter,
     usersRouter,

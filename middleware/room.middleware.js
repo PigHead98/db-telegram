@@ -69,6 +69,21 @@ module.exports = {
 
         next();
     },
+    validCreateRoom2Users : ( req, res, next ) => {
+        const { from, to } = req.body;
+
+
+        // check if array user have values that are not type mongo id
+        let check = [ from, to ].every( item => isMongoId( item ) );
+
+        if ( !check || from === to ) {
+            return res.status( 401 ).send(
+                failure( { users : `users wrong format` }, `data_wrong` )
+            );
+        }
+
+        next();
+    },
     // validUpdate : async ( req, res, next ) => {
     //     const data = req.body;
     //
