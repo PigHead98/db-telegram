@@ -2,25 +2,31 @@ const express = require( 'express' );
 const router = express.Router();
 
 const LoginController = require( '../controller/login.controller' );
-const RoomController = require( '../controller/room.controller' );
+const { getRooms, postCreateRoom, postUpdateRoom, postDelRoom, findOrCreateChatRoom } = require( '../controller/room.controller' );
 const AuthController = require( "../controller/auth.controller" );
 
-const AuthMiddleWare = require( "../middleware/AuthMiddleware" );
-const UserMiddleWare = require( "../middleware/UserMiddleware" );
+const { isAuth } = require( "../middleware/AuthMiddleware" );
+const { validCreateRoom } = require( "../middleware/RoomMiddleware" );
 const RateLimitMiddleware = require( "../middleware/RateLimitMiddleware" );
 
 /* GET users listing. */
-router.get( '/', RoomController.getRooms );
+router.get( '/', getRooms );
 
 router.post( '/create',
-    RoomController.postCreateRoom
+    validCreateRoom,
+    postCreateRoom
 );
 
 router.post( '/update/:roomId',
-    RoomController.postUpdateRoom
+    postUpdateRoom
 );
 router.post( '/del/:roomId',
-    RoomController.postDelRoom
+    postDelRoom
+);
+
+router.get( '/create-chat-rooms/:from-:to',
+    validCreateRoom,
+    findOrCreateChatRoom
 );
 
 module.exports = router;

@@ -21,6 +21,7 @@
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.2.1",
     "mongoose": "^5.9.2",
+    "mongoose-findorcreate": "^3.0.0",
     "morgan": "~1.9.1",
     "multer": "^1.4.2",
     "rate-limit-mongo": "^2.1.0",

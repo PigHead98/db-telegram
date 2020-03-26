@@ -1,5 +1,6 @@
 const Room = require( '../models/room.model' );
-const Response = require( '../helpers/response.helper' );
+const { failure, success } = require( '../helpers/response.helper' );
+const { getDataBy } = require( '../helpers/getDataResponse.helper' );
 
 module.exports = {
     getRooms : async ( req, res, next ) => {
@@ -8,30 +9,33 @@ module.exports = {
                 "state.available" : process.env.STATUS_ACTIVE
             } );
 
-            return res.send( Response.success( dataRoom ) );
+            return res.send( success( dataRoom ) );
         } catch ( e ) {
-            return res.send( Response.failure( e.message ) );
+            return res.send( failure( e.message ) );
         }
     },
     postCreateRoom : async ( req, res ) => {
         try {
             const data = req.body;
+            console.log( data.users );
             let result = await Room.create( data );
 
-            return res.send( Response.success( result ) );
+            return res.send( success( result ) );
         } catch ( e ) {
-            return res.send( Response.failure( e.message ) );
+            return res.send( failure( e.message ) );
         }
     },
     postDelRoom : async ( req, res ) => {
         try {
-            let result = await Room.updateOne( { _id : req.params.roomId }, { $set : {
-                "state.available" : process.env.STATUS_INACTIVE
-            } } );
+            let result = await Room.updateOne( { _id : req.params.roomId }, {
+                $set : {
+                    "state.available" : process.env.STATUS_INACTIVE
+                }
+            } );
 
-            return res.send( Response.success( result ) );
+            return res.send( success( result ) );
         } catch ( e ) {
-            return res.send( Response.failure( e.message ) );
+            return res.send( failure( e.message ) );
         }
     },
     postUpdateRoom : async ( req, res ) => {
@@ -39,9 +43,44 @@ module.exports = {
             const data = req.body;
             let result = await Room.updateOne( { _id : req.params.roomId }, { $set : data } );
 
-            return res.send( Response.success( result ) );
+            return res.send( success( result ) );
         } catch ( e ) {
-            return res.send( Response.failure( e.message ) );
+            return res.send( failure( e.message ) );
         }
-    }
+    },
+    findOrCreateChatRoom : async ( req, res ) => {
+        try {
+            // this api to do 2 get room have only 2 user (normal mess)
+
+            // find room that have users [ userId1,userId2 ]
+            const getRoomUser = await Room.findOne( {
+                $or : [
+                    {
+                        users :
+                            [ req.params.from, req.params.to ]
+                    },
+                    {
+                        users :
+                            [ req.params.to, req.params.from ]
+                    }
+                ]
+            } );
+
+            if ( getRoomUser ) {
+                return res.send(
+                    success( getDataBy( getRoomUser, "_id", "users" ) )
+                );
+            }
+
+            const createRoom = await Room.create( { users : [ req.params.from, req.params.to ] } );
+
+            return res.send(
+                success( getDataBy( createRoom, "_id", "users" ) )
+            );
+        } catch ( e ) {
+            return res.status( 401 ).send( failure( {
+                message : e.message
+            } ) );
+        }
+    },
 };
