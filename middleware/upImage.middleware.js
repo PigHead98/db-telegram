@@ -42,10 +42,10 @@ module.exports.imageUpload = ( req, res, next ) => {
                 error.message = 'File Size is too large. Allowed file size is 200KB';
             }
 
-            return res.status( 500 ).send( failure( error.message, error.code ) );
+            return res.status( 500 ).json( failure( error.message, error.code ) );
         } else {
             if ( !req.file ) {
-                res.status( 500 ).send( failure( 'file not found', '404' ) );
+                res.status( 500 ).json( failure( 'file not found', '404' ) );
             }
 
             //rename to save filename in db. It's will be (../public path/filename)
@@ -54,10 +54,10 @@ module.exports.imageUpload = ( req, res, next ) => {
             //req.params.userId is user id who upload file
             update_avatar( req.params.userId, pathFile )
                 .then( onDone => {
-                    return res.status( 200 ).send( success( onDone.avatar ) )
+                    return res.status( 200 ).json( success( onDone.avatar ) )
                 } )
                 .catch( error => {
-                    return res.status( 500 ).send( failure( error.message ) );
+                    return res.status( 500 ).json( failure( error.message ) );
                 } );
         }
 

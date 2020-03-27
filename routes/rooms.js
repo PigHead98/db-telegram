@@ -24,7 +24,7 @@ router.post( '/del/:roomId',
     postDelRoom
 );
 
-router.post( '/room-for-two-user',
+router.post( '/rooms-for-two-user',
     validCreateRoom2Users,
     findOrCreateChatRoom
 );

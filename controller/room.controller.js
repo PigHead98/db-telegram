@@ -9,9 +9,9 @@ module.exports = {
                 "state.available" : process.env.STATUS_ACTIVE
             } );
 
-            return res.send( success( dataRoom ) );
+            return res.json( success( dataRoom ) );
         } catch ( e ) {
-            return res.send( failure( e.message ) );
+            return res.json( failure( e.message ) );
         }
     },
     postCreateRoom : async ( req, res ) => {
@@ -20,9 +20,9 @@ module.exports = {
             console.log( data.users );
             let result = await Room.create( data );
 
-            return res.send( success( result ) );
+            return res.json( success( result ) );
         } catch ( e ) {
-            return res.send( failure( e.message ) );
+            return res.json( failure( e.message ) );
         }
     },
     postDelRoom : async ( req, res ) => {
@@ -33,9 +33,9 @@ module.exports = {
                 }
             } );
 
-            return res.send( success( result ) );
+            return res.json( success( result ) );
         } catch ( e ) {
-            return res.send( failure( e.message ) );
+            return res.json( failure( e.message ) );
         }
     },
     postUpdateRoom : async ( req, res ) => {
@@ -43,16 +43,15 @@ module.exports = {
             const data = req.body;
             let result = await Room.updateOne( { _id : req.params.roomId }, { $set : data } );
 
-            return res.send( success( result ) );
+            return res.json( success( result ) );
         } catch ( e ) {
-            return res.send( failure( e.message ) );
+            return res.json( failure( e.message ) );
         }
     },
     findOrCreateChatRoom : async ( req, res ) => {
         try {
             const { from, to } = req.body;
             // this api to do 2 get or create room for only 2 user (normal mess)
-
             // only rooms for 2 users named idUser1 + idUser2
             const getRoomUser = await Room.findOne( {
                 $or : [
@@ -63,18 +62,18 @@ module.exports = {
             } );
 
             if ( getRoomUser ) {
-                return res.send(
+                return res.json(
                     success( getDataBy( getRoomUser, "_id", "users" ) )
                 );
             }
 
             const createRoom = await Room.create( { name : from + to, users : [ from, to ] } );
 
-            return res.send(
+            return res.json(
                 success( getDataBy( createRoom, "_id", "users" ) )
             );
         } catch ( e ) {
-            return res.status( 401 ).send( failure( {
+            return res.status( 401 ).json( failure( {
                 message : e.message
             } ) );
         }

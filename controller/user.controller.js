@@ -8,7 +8,7 @@ module.exports = {
     index : async ( req, res, next ) => {
         try {
             let dataUsers = await User.find();
-            return res.send( success( dataUsers ) );
+            return res.json( success( dataUsers ) );
         } catch ( e ) {
             next( e )
         }
@@ -25,16 +25,16 @@ module.exports = {
             // when have error at create token
             if ( data.jwtToken.error ) {
                 // next(renderToken.error);
-                return res.status( 401 ).send(
+                return res.status( 401 ).json(
                     failure( data.jwtToken.error.message, `createToken_fails` )
                 );
             }
 
             let result = await User.create( data );
 
-            return res.send( success( getDataBy( result, "contacts", "_id", "name", "email", "jwtToken", ) ) );
+            return res.json( success( getDataBy( result, "contacts", "_id", "name", "email", "jwtToken", ) ) );
         } catch ( error ) {
-            return res.status( 401 ).send(
+            return res.status( 401 ).json(
                 failure( error.message, `register_fails` ) );
         }
     },
@@ -44,11 +44,11 @@ module.exports = {
 
             let result = await User.updateOne( { _id : req.params.userId }, { $set : data } );
 
-            return res.send(
+            return res.json(
                 success( result )
             );
         } catch ( e ) {
-            return res.status( 401 ).send( failure( {
+            return res.status( 401 ).json( failure( {
                 message : e.message
             } ) );
         }
@@ -67,12 +67,12 @@ module.exports = {
                 ]
             }, 'name email avatar' );
 
-            return res.send(
+            return res.json(
                 success( result )
             );
 
         } catch ( e ) {
-            return res.status( 401 ).send( failure( {
+            return res.status( 401 ).json( failure( {
                 message : e.message
             } ) );
         }
@@ -97,16 +97,16 @@ module.exports = {
                     };
                     break;
                 default:
-                    return res.status( 401 ).send( failure( `This route only use for remove or add`, 'route_fails' ) );
+                    return res.status( 401 ).json( failure( `This route only use for remove or add`, 'route_fails' ) );
             }
             const updateUser = await User.findByIdAndUpdate( req.params.from, update, { new : true } );
 
-            return res.send(
+            return res.json(
                 success( getDataBy( updateUser, "contacts" ) )
             );
 
         } catch ( e ) {
-            return res.status( 401 ).send( failure( {
+            return res.status( 401 ).json( failure( {
                 message : e.message
             } ) );
         }

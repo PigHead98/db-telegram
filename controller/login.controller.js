@@ -17,7 +17,7 @@ module.exports = {
                 "state.online" : true
             }, { new : true } );
 
-            return res.send(
+            return res.json(
                 success( {
                         ...getDataBy( updateToken, "name", "_id", "contacts", "email", "avatar" ),
                         accessToken : createToken.accessToken,
@@ -26,7 +26,7 @@ module.exports = {
                 )
             );
         } catch ( e ) {
-            return res.send(
+            return res.json(
                 failure( e.message )
             );
         }
@@ -38,13 +38,13 @@ module.exports = {
                 "state.online" : false
             }, { new : true } );
 
-            return res.send(
+            return res.json(
                 success(
                     `logout`
                 )
             );
         } catch ( e ) {
-            return res.send(
+            return res.json(
                 failure( e.message )
             );
         }
@@ -56,16 +56,16 @@ module.exports = {
             const refreshToken = await auth.refreshToken( refreshTokenFromClient );
 
             if ( refreshToken.error ) {
-                return res.send(
+                return res.json(
                     failure( refreshToken.error, `refreshToken_fails` )
                 );
             }
 
-            return res.send(
+            return res.json(
                 success( refreshToken )
             );
         } catch ( e ) {
-            return res.send(
+            return res.json(
                 failure( e.message, `refreshToken_fails` )
             );
         }

@@ -8,19 +8,18 @@ module.exports = {
                 "messageStatus" : process.env.STATUS_ACTIVE
             } );
 
-            return res.send( Response.success( dataMessage ) );
+            return res.json( Response.success( dataMessage ) );
         } catch ( e ) {
-            return res.send( Response.failure( e.message ) );
+            return res.json( Response.failure( e.message ) );
         }
     },
     postCreateMessage : async ( req, res ) => {
         try {
-            const data = req.body;
-            let result = await Message.create( data );
+            let result = await Message.create( req.body );
 
-            return res.send( Response.success( result ) );
+            return res.json( Response.success( result ) );
         } catch ( e ) {
-            return res.send( Response.failure( e.message ) );
+            return res.json( Response.failure( e.message ) );
         }
     },
     postDelMessage : async ( req, res ) => {
@@ -29,9 +28,9 @@ module.exports = {
                     "messageStatus" : process.env.STATUS_INACTIVE
                 } } );
 
-            return res.send( Response.success( result ) );
+            return res.json( Response.success( result ) );
         } catch ( e ) {
-            return res.send( Response.failure( e.message ) );
+            return res.json( Response.failure( e.message ) );
         }
     },
     postUpdateMessage : async ( req, res ) => {
@@ -39,9 +38,9 @@ module.exports = {
             const data = req.body;
             let result = await Message.updateOne( { _id : req.params.messageId }, { $set : data } );
 
-            return res.send( Response.success( result ) );
+            return res.json( Response.success( result ) );
         } catch ( e ) {
-            return res.send( Response.failure( e.message ) );
+            return res.json( Response.failure( e.message ) );
         }
     }
 };

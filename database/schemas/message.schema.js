@@ -8,7 +8,7 @@ const messageSchema = new mongoose.Schema( {
         type : Boolean,
         default : true
     },
-    messagesStyle : {
+    messageStyle : {
         type : Number,
         default : process.env.MESSAGE_STYLE_TEXT
     },

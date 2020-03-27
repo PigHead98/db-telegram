@@ -24,10 +24,10 @@ module.exports = {
                 req.jwtDecoded = decoded;
                 next();
             } catch ( error ) {
-                return res.status( 401 ).send( failure( error, `verifyToken_fails` ) );
+                return res.status( 401 ).json( failure( error, `verifyToken_fails` ) );
             }
         } else {
-            return res.status( 403 ).send( failure( 'No token provided.', `auth_fails` ) );
+            return res.status( 403 ).json( failure( 'No token provided.', `auth_fails` ) );
         }
     }
 };

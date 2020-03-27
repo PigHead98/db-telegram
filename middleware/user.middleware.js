@@ -24,7 +24,7 @@ module.exports = {
         let checkExists = await User.findOne( { email : data.email } );
 
         if ( checkExists ) {
-            return res.status( 401 ).send(
+            return res.status( 401 ).json(
                 failure( `email already used`, `email_exists`
                 )
             );
@@ -32,7 +32,7 @@ module.exports = {
 
         if ( Object.keys( error ).length > 0 ) {
 
-            return res.status( 401 ).send(
+            return res.status( 401 ).json(
                 failure( error, `data_wrong` )
             );
         }
@@ -42,7 +42,7 @@ module.exports = {
     validUpdate : ( req, res, next ) => {
         try {
             if ( !isMongoId( req.params.userId ) ) {
-                return res.status( 403 ).send(
+                return res.status( 403 ).json(
                     failure( `user id wrong format`, `userId_wrong` )
                 );
             }
@@ -73,7 +73,7 @@ module.exports = {
 
             next();
         } catch ( e ) {
-            return res.status( 401 ).send(
+            return res.status( 401 ).json(
                 failure( e.message )
             );
         }
@@ -85,7 +85,7 @@ module.exports = {
         } );
 
         if ( !result ) {
-            return res.status( 401 ).send(
+            return res.status( 401 ).json(
                 failure( {
                     email : "email is invalid",
                     data : req.body.email
@@ -94,7 +94,7 @@ module.exports = {
         }
 
         if ( result.password !== md5( req.body.password ) ) {
-            return res.status( 401 ).send(
+            return res.status( 401 ).json(
                 failure( {
                     password : "password is invalid",
                     data : req.body.password
@@ -106,7 +106,7 @@ module.exports = {
     },
     validLogout : async ( req, res, next ) => {
         if ( !isMongoId( req.params.userId ) ) {
-            return res.status( 403 ).send(
+            return res.status( 403 ).json(
                 failure( `user id wrong format`, `userId_wrong` )
             );
         }
