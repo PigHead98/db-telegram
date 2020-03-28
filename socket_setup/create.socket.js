@@ -1,34 +1,9 @@
 const server = require( '../server' );
 const io = require( 'socket.io' )( server );
-const Room = require( '../models/room.model' );
-const Message = require( '../models/message.model' );
+const { saveMess } = require( '../controller/socket.controller' );
 const { failure } = require( '../helpers/response.helper' );
-const { getDataBy } = require( '../helpers/getDataResponse.helper' );
 
 let interval;
-const join = {
-    roomId : 'id',
-    userInfo : {
-        id : 'id',
-        name : 'name'
-    }
-};
-const sendMes = {
-    roomId : 'id',
-    userId : 'id',
-    messenger : 'text',
-};
-
-const getData = async ( socket, key, data ) => {
-    try {
-        const saveMess = await Message.create( {
-            messageBody : data
-        } );
-        // io.emit( key, data );
-    } catch ( e ) {
-        console.log( e.message )
-    }
-};
 
 io.on( "connection", async ( socket ) => {
     console.log( "New client connected" );
@@ -38,7 +13,6 @@ io.on( "connection", async ( socket ) => {
 
     socket.on( "join", ( { roomId, userInfo }, callback ) => {
         try {
-
             socket.emit( "messenger", {
                 user : process.env.DEFAULTS_NAME_MESSAGE,
                 text : `${ userInfo.name } has joined`
@@ -60,7 +34,7 @@ io.on( "connection", async ( socket ) => {
 
     socket.on( "sendMessenger", ( { messenger, roomId, userId }, callback ) => {
         try {
-            saveMess( messenger, roomId, userId )
+            handling( messenger, roomId, userId )
 
         } catch ( e ) {
             console.log( e.message );
@@ -74,16 +48,12 @@ io.on( "connection", async ( socket ) => {
     } );
 } );
 
-const saveMess = async ( messenger, roomId, userId ) => {
+const handling = async ( messenger, roomId, userId ) => {
 
     io.sockets.in( roomId ).emit( 'messenger', {
         user : userId,
         text : `${ messenger }`
     } );
-    return await Message.create( {
-        idRoom : roomId,
-        idUser : userId,
-        messageBody : messenger
-    } );
+    return saveMess(messenger, roomId, userId);
 };
 

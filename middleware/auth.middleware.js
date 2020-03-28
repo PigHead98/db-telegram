@@ -1,5 +1,5 @@
 const jwtHelper = require( "../helpers/jwt.helper" );
-const { success, failure } = require( '../helpers/response.helper' );
+const { failure } = require( '../helpers/response.helper' );
 const User = require( '../models/user.model' );
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || "access-token-secret-example";
 

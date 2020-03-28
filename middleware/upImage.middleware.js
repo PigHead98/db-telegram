@@ -1,7 +1,6 @@
 const { update_avatar } = require( '../controller/user.controller' );
 const { multer } = require( '../app_module/node_module.exports' );
 const { success, failure } = require( '../helpers/response.helper' );
-const { getDataBy } = require( '../helpers/getDataResponse.helper' );
 
 // setup storage and create filename
 const storage = multer.diskStorage( {

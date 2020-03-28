@@ -1,5 +1,4 @@
 const jwt = require( "jsonwebtoken" );
-const { success, failure } = require( './response.helper' );
 
 let generateToken = ( user, secretSignature, tokenLife ) => {
     return new Promise( ( resolve, reject ) => {

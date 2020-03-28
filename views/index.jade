@@ -1,6 +1,20 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-
+  .container
+    .row
+      .col-12
+        h1 Welcome to my server
+        h2 The owner is
+          b.ml-2 #{owner}
+        p The source is published at
+          a(href=urlSource).btn.btn-primary.ml-2 Click me!!
+      .col-6
+        h3 The progress
+        .progress
+          .progress-bar(role='progressbar', style='width: #{progress}%;', aria-valuenow='#{progress}', aria-valuemin='0', aria-valuemax='100') #{progress}%
+      .col-12.mt-5
+        h3 About project:
+          ul
+            li Using express framework (nodeJs)
+            li Used to store real-time chat boxes with mobi (flutter) clients

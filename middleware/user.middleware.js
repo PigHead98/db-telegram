@@ -5,23 +5,19 @@ const md5 = require( 'md5' );
 
 module.exports = {
     validRegister : async ( req, res, next ) => {
-        const data = req.body;
+        const { email, name, password } = req.body;
 
         let error = {};
 
-        !isEmail( data.email )
-        &&
-        Object.assign( error, { email : `email is wrong format` } );
+        !isEmail( email ) && Object.assign( error, { email : `email is wrong format` } );
 
-        !data.name
-        &&
-        Object.assign( error, { name : `name is required` } );
+        !name && Object.assign( error, { name : `name is required` } );
 
-        ( !data.password || data.password.toString().length < 8 )
+        ( !password || password.toString().length < 8 )
         &&
         Object.assign( error, { password : `password is wrong format` } );
 
-        let checkExists = await User.findOne( { email : data.email } );
+        let checkExists = await User.findOne( { email : email } );
 
         if ( checkExists ) {
             return res.status( 401 ).json(
@@ -52,24 +48,19 @@ module.exports = {
             delete data["contacts"]; //not change contacts in this route
             delete data["avatar"]; //not change avatar in this route
 
-            !data.name
-            &&
-            delete data["name"];
+            !data.name && delete data["name"];
 
-            !data.phone
-            &&
-            delete data["phone"];
+            !data.phone && delete data["phone"];
 
-            !data.apiVer
-            &&
-            delete data["apiVer"];
+            !data.apiVer && delete data["apiVer"];
 
             ( !data.password || data.password.toString().length < 8 )
             &&
             delete data["password"];
 
-            if ( data.password )
+            if ( data.password ) {
                 req.body.password = md5( data.password );
+            }
 
             next();
         } catch ( e ) {

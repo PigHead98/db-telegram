@@ -2,11 +2,15 @@ const express = require('express');
 const cors = require('cors');
 
 const router = express.Router();
-const AuthMiddleWare = require("../middleware/auth.middleware");
+const {apiLimiter} = require("../middleware/rateLimit.middleware");
 
 /* GET home page. */
-router.get('/', (req,res,next) => {
-    res.render('index', { title: "name" });
+router.get('/', apiLimiter, (req, res, next) => {
+  res.render('index', {
+    owner: "Dao Truong An",
+    urlSource: "https://github.com/PigHead98/db-telegram",
+    progress: "50"
+  });
 });
 
 module.exports = router;

@@ -6,26 +6,15 @@ const { failure } = require( '../helpers/response.helper' );
 module.exports = {
     validCreateRoom : ( req, res, next ) => {
         const { name, users } = req.body;
-
         let error = {};
 
-        !name
-        &&
-        Object.assign( error, { name : `name room is required` } );
-
-
-        !users
-        &&
-        Object.assign( error, { users : `users room is required` } );
-
-        users
-        &&
-        !Array.isArray( users )
-        &&
-        Object.assign( error, { users : `users room is array` } );
+        !name && Object.assign( error, { name : `name room is required` } );
+        
+        !users && Object.assign( error, { users : `users room is required` } );
+        
+        users && !Array.isArray( users ) && Object.assign( error, { users : `users room is array` } );
 
         if ( Object.keys( error ).length > 0 ) {
-
             return res.status( 401 ).json(
                 failure( error, `data_wrong` )
             );

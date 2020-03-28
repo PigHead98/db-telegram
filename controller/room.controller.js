@@ -17,7 +17,7 @@ module.exports = {
     postCreateRoom : async ( req, res ) => {
         try {
             const data = req.body;
-            console.log( data.users );
+           
             let result = await Room.create( data );
 
             return res.json( success( result ) );
