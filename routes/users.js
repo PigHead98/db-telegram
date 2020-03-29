@@ -2,51 +2,51 @@ const express = require( 'express' );
 
 const router = express.Router();
 
-const LoginController = require( '../controller/login.controller' );
-const UserController = require( '../controller/user.controller' );
-const AuthController = require( "../controller/auth.controller" );
+const { postCheckLogin, postLogout } = require( '../controller/login.controller' );
+const { index, search_contact, register, update_contact, update } = require( '../controller/user.controller' );
+const { refreshToken } = require( '../controller/auth.controller' );
 
-const AuthMiddleWare = require( "../middleware/auth.middleware" ); // check jwt token
-const UserMiddleWare = require( "../middleware/user.middleware" ); // valid data from client
-const RateLimitMiddleware = require( "../middleware/rateLimit.middleware" ); // limit request
+const { isAuth } = require( "../middleware/auth.middleware" ); // check jwt token
+const { validLogin, validLogout, validRegister, validUpdate } = require( "../middleware/user.middleware" ); // valid data from client
+const { createAccountLimiter } = require( "../middleware/rateLimit.middleware" ); // limit request
 
 /* GET users listing. */
-router.get( '/:userId?', UserController.index );
+router.get( '/:userId?', index );
 
 router.get( '/search_contact/:value',
-    UserController.search_contact
+    search_contact
 );
 
 router.post( '/contact/:update/:from-:to',
-    UserController.update_contact
+    update_contact
 );
 
 
 router.post( '/register',
-    RateLimitMiddleware.createAccountLimiter,
-    UserMiddleWare.validRegister,
-    UserController.register
+    createAccountLimiter,
+    validRegister,
+    register
 );
 
 router.post( '/update/:userId',
-    AuthMiddleWare.isAuth,
-    UserMiddleWare.validUpdate,
-    UserController.update
+    isAuth,
+    validUpdate,
+    update
 );
 
 router.post( '/login',
     // RateLimitMiddleware.loginAccountLimiter,
-    UserMiddleWare.validLogin,
-    LoginController.postCheckLogin
+    validLogin,
+    postCheckLogin
 );
 
 router.get( '/logout/:userId',
-    UserMiddleWare.validLogout,
-    LoginController.postLogout
+    validLogout,
+    postLogout
 );
 
 router.post( '/refresh-token',
-    LoginController.refreshToken
+    refreshToken
 );
 
 module.exports = router;

@@ -1,26 +1,21 @@
 const express = require( 'express' );
 const router = express.Router();
 
-const LoginController = require( '../controller/login.controller' );
-const MessageController = require( '../controller/message.controller' );
-const AuthController = require( "../controller/auth.controller" );
+const { getMessages, postCreateMessage, postUpdateMessage, postDelMessage } = require( '../controller/message.controller' );
 
-const AuthMiddleWare = require( "../middleware/auth.middleware" );
-const UserMiddleWare = require( "../middleware/user.middleware" );
-const RateLimitMiddleware = require( "../middleware/rateLimit.middleware" );
 
 /* GET users listing. */
-router.get( '/', MessageController.getMessages );
+router.get( '/', getMessages );
 
 router.post( '/create',
-    MessageController.postCreateMessage
+    postCreateMessage
 );
 
 router.post( '/update/:MessageId',
-    MessageController.postUpdateMessage
+    postUpdateMessage
 );
 router.post( '/del/:MessageId',
-    MessageController.postDelMessage
+    postDelMessage
 );
 
 module.exports = router;

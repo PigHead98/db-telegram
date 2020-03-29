@@ -34,7 +34,7 @@ io.on( "connection", async ( socket ) => {
 
     socket.on( "sendMessenger", ( { messenger, roomId, userId }, callback ) => {
         try {
-            handling( messenger, roomId, userId )
+            handling( messenger, roomId, userId );
 
         } catch ( e ) {
             console.log( e.message );
@@ -49,7 +49,6 @@ io.on( "connection", async ( socket ) => {
 } );
 
 const handling = async ( messenger, roomId, userId ) => {
-
     io.sockets.in( roomId ).emit( 'messenger', {
         user : userId,
         text : `${ messenger }`
