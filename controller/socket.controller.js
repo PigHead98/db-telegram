@@ -16,7 +16,7 @@ module.exports = {
                 break;
         }
     },
-    saveMess : async ( messenger, roomId, userId ) => {
+    socketSaveMess : async ( messenger, roomId, userId ) => {
         return await Message.create( {
             idRoom : roomId,
             idUser : userId,

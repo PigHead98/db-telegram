@@ -1,16 +1,13 @@
 const server = require( '../server' );
 const io = require( 'socket.io' )( server );
-const { saveMess } = require( '../controller/socket.controller' );
+const { socketSaveMess } = require( '../controller/socket.controller' );
 const { failure } = require( '../helpers/response.helper' );
-
-let interval;
 
 io.on( "connection", async ( socket ) => {
     console.log( "New client connected" );
-    if ( interval ) {
-        clearInterval( interval );
-    }
 
+
+    socket.join('id');
     socket.on( "join", ( { roomId, userInfo }, callback ) => {
         try {
             socket.emit( "messenger", {
@@ -34,7 +31,19 @@ io.on( "connection", async ( socket ) => {
 
     socket.on( "sendMessenger", ( { messenger, roomId, userId }, callback ) => {
         try {
-            handling( messenger, roomId, userId );
+            socket.emit( 'messenger', {
+                user : userId,
+                text : `1. ${ messenger }`
+            } );
+            handlingSendMsg( messenger, roomId, userId );
+        } catch ( e ) {
+            console.log( e.message );
+            callback( failure( e.message, 'sendMessenger_error' ) )
+        }
+    } );
+
+    socket.on( "reqAddContact", ( { userToId, userFromId }, callback ) => {
+        try {
 
         } catch ( e ) {
             console.log( e.message );
@@ -42,17 +51,27 @@ io.on( "connection", async ( socket ) => {
         }
     } );
 
-    // interval = setInterval( () => getApiAndEmit( socket ), 100000 );
     socket.on( "disconnect", () => {
         console.log( "Client disconnected" );
     } );
 } );
 
-const handling = async ( messenger, roomId, userId ) => {
+const handlingSendMsg = async ( messenger, roomId, userId ) => {
+    const result = await socketSaveMess( messenger, roomId, userId );
+
+    console.log( result );
+    if( result ) {
+        io.sockets.in( roomId ).emit( 'messenger', {
+            user : userId,
+            text : `${ messenger }`
+        } );
+        return
+    }
+
     io.sockets.in( roomId ).emit( 'messenger', {
-        user : userId,
-        text : `${ messenger }`
+        user : process.env.DEFAULTS_NAME_MESSAGE,
+        text : `something goes wrong at save_mess`
     } );
-    return saveMess(messenger, roomId, userId);
+
 };
 
