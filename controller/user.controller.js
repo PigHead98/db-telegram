@@ -40,9 +40,7 @@ module.exports = {
     },
     update : async ( req, res ) => {
         try {
-            const data = req.body;
-
-            let result = await User.updateOne( { _id : req.params.userId }, { $set : data } );
+            let result = await User.updateOne( { _id : req.params.userId }, { $set : req.body } );
 
             return res.json(
                 success( result )

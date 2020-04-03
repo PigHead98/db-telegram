@@ -72,6 +72,6 @@ const handlingSendMsg = async ( messenger, roomId, userId ) => {
         user : process.env.DEFAULTS_NAME_MESSAGE,
         text : `something goes wrong at save_mess`
     } );
-
+    return
 };
 

@@ -21,7 +21,7 @@ module.exports = {
 
                 // verify token to check accept token
                 const decoded = await jwtHelper.verifyToken( tokenFromClient, accessTokenSecret );
-                req.jwtDecoded = decoded;
+                req.jwtDecoded = decoded.data;
                 next();
             } catch ( error ) {
                 return res.status( 401 ).json( failure( error, `verifyToken_fails` ) );

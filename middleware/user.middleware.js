@@ -35,9 +35,9 @@ module.exports = {
 
         next();
     },
-    validUpdate : ( req, res, next ) => {
+    validUpdate : async ( req, res, next ) => {
         try {
-            if ( !isMongoId( req.params.userId ) ) {
+            if ( !isMongoId( req.params.userId ) || req.params.userId !== req.jwtDecoded._id ) {
                 return res.status( 403 ).json(
                     failure( `user id wrong format`, `userId_wrong` )
                 );
@@ -47,20 +47,13 @@ module.exports = {
             delete data["jwtToken"]; //not change jwtToken in this route
             delete data["contacts"]; //not change contacts in this route
             delete data["avatar"]; //not change avatar in this route
+            delete data["password"]; //not change password in this route
 
             !data.name && delete data["name"];
 
             !data.phone && delete data["phone"];
 
             !data.apiVer && delete data["apiVer"];
-
-            ( !data.password || data.password.toString().length < 8 )
-            &&
-            delete data["password"];
-
-            if ( data.password ) {
-                req.body.password = md5( data.password );
-            }
 
             next();
         } catch ( e ) {
