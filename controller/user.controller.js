@@ -7,7 +7,7 @@ const md5 = require( 'md5' );
 module.exports = {
     index : async ( req, res, next ) => {
         try {
-            let dataUsers = await User.find();
+            const dataUsers = await User.find();
             return res.json( success( dataUsers ) );
         } catch ( e ) {
             next( e )
@@ -16,7 +16,7 @@ module.exports = {
     register : async ( req, res ) => {
         try {
             // get data form client
-            let data = req.body;
+            const data = req.body;
 
             // all data was checked by middleware so here only to save at db
             data.password = md5( data.password ); // encode md5
@@ -40,7 +40,7 @@ module.exports = {
     },
     update : async ( req, res ) => {
         try {
-            let result = await User.updateOne( { _id : req.params.userId }, { $set : req.body } );
+            const result = await User.updateOne( { _id : req.params.userId }, { $set : req.body } );
 
             return res.json(
                 success( result )
@@ -54,7 +54,7 @@ module.exports = {
     search_contact : async ( req, res ) => {
         try {
             // this api to response contact when client search ( by email or phone )
-            let result = await User.findOne( {
+            const result = await User.findOne( {
                 $or : [
                     {
                         email : req.params.value
