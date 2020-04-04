@@ -52,7 +52,6 @@ module.exports = {
     refreshToken : async ( req, res ) => {
         try {
             const refreshTokenFromClient = req.body.refreshToken;
-
             const refreshToken = await auth.refreshToken( refreshTokenFromClient );
 
             if ( refreshToken.error ) {

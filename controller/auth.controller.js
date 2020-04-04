@@ -27,7 +27,6 @@ let refreshToken = async ( refreshTokenFromClient ) => {
         "jwtToken.refreshToken" : refreshTokenFromClient
     } );
 
-    // have refresh token from Client and exists in db
     if ( refreshTokenFromClient && checkExists ) {
         try {
             // Verify kiểm tra tính hợp lệ của cái refreshToken và lấy dữ liệu giải mã decoded

@@ -1,6 +1,6 @@
 const { isEmail, isMongoId } = require( 'validator' );
 const User = require( '../models/user.model' );
-const { success, failure } = require( '../helpers/response.helper' );
+const { failure } = require( '../helpers/response.helper' );
 const md5 = require( 'md5' );
 
 module.exports = {
@@ -43,11 +43,12 @@ module.exports = {
                 );
             }
             const data = req.body;
-            delete data["email"]; //not change email in this route
-            delete data["jwtToken"]; //not change jwtToken in this route
-            delete data["contacts"]; //not change contacts in this route
-            delete data["avatar"]; //not change avatar in this route
-            delete data["password"]; //not change password in this route
+            // the value that do not change in this route
+            delete data["email"];
+            delete data["jwtToken"];
+            delete data["contacts"];
+            delete data["avatar"];
+            delete data["password"];
 
             !data.name && delete data["name"];
 

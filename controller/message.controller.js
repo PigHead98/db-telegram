@@ -2,7 +2,7 @@ const Message = require( '../models/message.model' );
 const {success,failure} = require( '../helpers/response.helper' );
 
 module.exports = {
-    getMessages : async ( req, res, next ) => {
+    getMessages : async ( req, res ) => {
         try {
             const dataMessage = await Message.find( {
                 "messageStatus" : process.env.STATUS_ACTIVE
@@ -15,7 +15,7 @@ module.exports = {
     },
     postCreateMessage : async ( req, res ) => {
         try {
-            let result = await Message.create( req.body );
+            const result = await Message.create( req.body );
 
             return res.json( success( result ) );
         } catch ( e ) {
@@ -24,7 +24,7 @@ module.exports = {
     },
     postDelMessage : async ( req, res ) => {
         try {
-            let result = await Message.updateOne( { _id : req.params.messageId }, { $set : {
+            const result = await Message.updateOne( { _id : req.params.messageId }, { $set : {
                     "messageStatus" : process.env.STATUS_INACTIVE
                 } } );
 
@@ -35,8 +35,7 @@ module.exports = {
     },
     postUpdateMessage : async ( req, res ) => {
         try {
-            const data = req.body;
-            let result = await Message.updateOne( { _id : req.params.messageId }, { $set : data } );
+            const result = await Message.updateOne( { _id : req.params.messageId }, { $set : req.body } );
 
             return res.json( success( result ) );
         } catch ( e ) {

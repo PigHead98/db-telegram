@@ -7,7 +7,7 @@ io.on( "connection", async ( socket ) => {
     console.log( "New client connected" );
 
 
-    socket.join('id');
+    // socket.join('id');
     socket.on( "join", ( { roomId, userInfo }, callback ) => {
         try {
             socket.emit( "messenger", {

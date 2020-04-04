@@ -1,4 +1,3 @@
-const { checkSchema } = require( 'express-validator' );
 const { isMongoId } = require( 'validator' );
 const User = require( '../models/user.model' );
 const { failure } = require( '../helpers/response.helper' );

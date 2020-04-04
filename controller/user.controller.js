@@ -30,7 +30,7 @@ module.exports = {
                 );
             }
 
-            let result = await User.create( data );
+            const result = await User.create( data );
 
             return res.json( success( getDataBy( result, "contacts", "_id", "name", "email", "jwtToken", ) ) );
         } catch ( error ) {

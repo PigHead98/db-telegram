@@ -3,7 +3,7 @@ const { failure, success } = require( '../helpers/response.helper' );
 const { getDataBy } = require( '../helpers/getDataResponse.helper' );
 
 module.exports = {
-    getRooms : async ( req, res, next ) => {
+    getRooms : async ( req, res ) => {
         try {
             const dataRoom = await Room.find( {
                 "state.available" : process.env.STATUS_ACTIVE
@@ -16,9 +16,7 @@ module.exports = {
     },
     postCreateRoom : async ( req, res ) => {
         try {
-            const data = req.body;
-           
-            let result = await Room.create( data );
+            const result = await Room.create( req.body );
 
             return res.json( success( result ) );
         } catch ( e ) {
@@ -27,7 +25,7 @@ module.exports = {
     },
     postDelRoom : async ( req, res ) => {
         try {
-            let result = await Room.updateOne( { _id : req.params.roomId }, {
+            const result = await Room.updateOne( { _id : req.params.roomId }, {
                 $set : {
                     "state.available" : process.env.STATUS_INACTIVE
                 }
@@ -40,8 +38,7 @@ module.exports = {
     },
     postUpdateRoom : async ( req, res ) => {
         try {
-            const data = req.body;
-            let result = await Room.updateOne( { _id : req.params.roomId }, { $set : data } );
+            const result = await Room.updateOne( { _id : req.params.roomId }, { $set : req.body } );
 
             return res.json( success( result ) );
         } catch ( e ) {
@@ -51,26 +48,22 @@ module.exports = {
     findOrCreateChatRoom : async ( req, res ) => {
         try {
             const { from, to } = req.body;
-            // this api to do 2 get or create room for only 2 user (normal mess)
+            // this api to do 2 find or create room for only 2 user (normal mess)
             // only rooms for 2 users named idUser1 + idUser2
-            const getRoomUser = await Room.findOne( {
+            let getRoomUser = await Room.findOne( {
                 $or : [
-                    { name : from + to },
+                    { name : from + to },+
                     { name : to + from }
                 ]
 
             } );
 
-            if ( getRoomUser ) {
-                return res.json(
-                    success( getDataBy( getRoomUser, "_id", "users" ) )
-                );
+            if ( !getRoomUser ) {
+                getRoomUser = await Room.create( { name : from + to, users : [ from, to ] } );
             }
 
-            const createRoom = await Room.create( { name : from + to, users : [ from, to ] } );
-
             return res.json(
-                success( getDataBy( createRoom, "_id", "users" ) )
+                success( getDataBy( getRoomUser, "_id", "users" ) )
             );
         } catch ( e ) {
             return res.status( 401 ).json( failure( {
