@@ -14,12 +14,11 @@ module.exports = {
         }
     },
     register : async ( req, res ) => {
+        // all data was checked by middleware so here only to save at db
         try {
-            // get data form client
             const data = req.body;
 
-            // all data was checked by middleware so here only to save at db
-            data.password = md5( data.password ); // encode md5
+            data.password = md5( data.password );
             data.jwtToken = await auth.createToken( data ); // create token jwt to check auth user
 
             // when have error at create token
