@@ -6,6 +6,8 @@ let generateToken = ( user, secretSignature, tokenLife ) => {
             _id : user._id,
             name : user.name,
             email : user.email,
+            avatar : user.avatar || null,
+            contacts : user.contacts || [],
         };
         // Thực hiện ký và tạo token
         jwt.sign(

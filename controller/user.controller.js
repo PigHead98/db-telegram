@@ -13,6 +13,9 @@ module.exports = {
             next( e )
         }
     },
+    getUserByToken : ( req, res ) => {
+        return res.json( success( req.jwtDecoded ) );
+    },
     register : async ( req, res ) => {
         // all data was checked by middleware so here only to save at db
         try {

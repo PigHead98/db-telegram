@@ -3,7 +3,7 @@ const express = require( 'express' );
 const router = express.Router();
 
 const { postCheckLogin, postLogout } = require( '../controller/login.controller' );
-const { index, search_contact, register, update_contact, update } = require( '../controller/user.controller' );
+const { index, getUserByToken, search_contact, register, update_contact, update } = require( '../controller/user.controller' );
 const { refreshToken } = require( '../controller/auth.controller' );
 
 const { isAuth } = require( "../middleware/auth.middleware" ); // check jwt token
@@ -11,10 +11,15 @@ const { validLogin, validLogout, validRegister, validUpdate } = require( "../mid
 const { createAccountLimiter } = require( "../middleware/rateLimit.middleware" ); // limit request
 
 /* GET users listing. */
-router.get( '/:userId?', index );
+// router.get( '/:userId?', index );
 
 router.get( '/search_contact/:value',
     search_contact
+);
+
+router.get( '/get-info-user-by-token',
+    isAuth,
+    getUserByToken
 );
 
 router.post( '/contact/:update/:from-:to',
