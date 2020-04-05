@@ -11,7 +11,7 @@ const {
 } = require( '../app_module/route.exports' );
 
 //router
-app.use( '/', cors(), apiLimiter, indexRouter );
+app.use( '/', cors(), indexRouter );
 app.use( '/users', cors(), usersRouter );
 app.use( '/rooms', cors(), roomsRouter );
 app.use( '/uploads', cors(), uploadsRouter );
