@@ -19,6 +19,8 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.5.1",
+    "kind-of": "^6.0.3",
+    "lodash": "^4.17.15",
     "md5": "^2.2.1",
     "mongoose": "^5.9.2",
     "mongoose-findorcreate": "^3.0.0",
