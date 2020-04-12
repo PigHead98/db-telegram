@@ -21,9 +21,12 @@ module.exports = {
                 // verify token to check accept token
                 const decoded = await jwtHelper.verifyToken( tokenFromClient, accessTokenSecret );
                 req.jwtDecoded = decoded.data;
-                console.log(req.jwtDecoded);
+
                 next();
             } catch ( error ) {
+                if ( error.name === 'TokenExpiredError' ) {
+                    return res.status( 401 ).json( failure( error, `token_expired` ) );
+                }
                 return res.status( 401 ).json( failure( error, `verifyToken_fails` ) );
             }
         } else {

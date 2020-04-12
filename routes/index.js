@@ -7,7 +7,7 @@ router.get( '/', ( req, res ) => {
     res.render( 'index', {
         owner : "Dao Truong An",
         urlSource : "https://github.com/PigHead98/db-telegram",
-        progress : "50"
+        progress : "75"
     } );
 } );
 
